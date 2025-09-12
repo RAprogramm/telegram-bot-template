@@ -1,0 +1,4 @@
+edition = "2021"
+group_imports = "StdExternalCrate"
+use_small_heuristics = "Max"
+newline_style = "Unix"
