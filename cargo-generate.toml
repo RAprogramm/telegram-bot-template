@@ -1,0 +1,28 @@
+[template]
+cargo_generate_version = ">=0.18.0"
+
+[placeholders.telegram_token]
+type = "string"
+prompt = "Bot token from @BotFather"
+default = "000000:TEST"
+
+[placeholders.bot_language]
+type = "string"
+prompt = "Default interface language (en or ru)"
+default = "en"
+
+[placeholders.run_mode]
+type = "string"
+prompt = "Run mode (polling or webhook)"
+default = "polling"
+
+[placeholders.webhook_url]
+type = "string"
+prompt = "Public HTTPS webhook URL"
+default = ""
+
+[placeholders.webhook_addr]
+type = "string"
+prompt = "Webhook bind address"
+default = "0.0.0.0:8443"
+

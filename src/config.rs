@@ -90,12 +90,15 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use std::env;
+    use std::{env, sync::Mutex};
+
+    static ENV_MUTEX: Mutex<()> = Mutex::new(());
 
     use super::{Config, ConfigError, Language, RunMode};
 
     #[test]
     fn default_config() {
+        let _lock = ENV_MUTEX.lock().expect("lock");
         env::remove_var("BOT_LANGUAGE");
         env::remove_var("RUN_MODE");
         let cfg = Config::from_env().expect("config");
@@ -105,6 +108,7 @@ mod tests {
 
     #[test]
     fn unsupported_language() {
+        let _lock = ENV_MUTEX.lock().expect("lock");
         env::set_var("BOT_LANGUAGE", "de");
         let err = Config::from_env().unwrap_err();
         match err {

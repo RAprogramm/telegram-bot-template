@@ -9,6 +9,19 @@ A production-ready template for building Telegram bots with [teloxide](https://g
 - Built-in multilingual greetings (English and Russian).
 - Configuration via environment variables.
 
+## Generating a new project
+
+Use [cargo-generate](https://github.com/cargo-generate/cargo-generate) to
+scaffold a new bot from this template:
+
+```bash
+cargo install cargo-generate # if not already installed
+cargo generate --git https://github.com/your-user/telegram-bot-template
+```
+
+You will be prompted for initial configuration values such as the bot token,
+default language and run mode. The answers populate the generated `.env` file.
+
 ## Configuration
 
 Set the following environment variables before running the bot:
