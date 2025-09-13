@@ -1,52 +1,102 @@
 # Telegram Bot Template
 
-A production-ready template for building Telegram bots with [teloxide](https://github.com/teloxide/teloxide).
+Production‑ready starting point for building Telegram bots with
+[teloxide](https://github.com/teloxide/teloxide).
 
-## Features
+## Quick start
 
-- Long polling for local development.
-- Webhook support for production deployments.
-- Built-in multilingual greetings (English and Russian).
-- Configuration via environment variables.
+1. **Install Rust** (stable toolchain) and `cargo-generate`:
 
-## Generating a new project
+   ```bash
+   curl https://sh.rustup.rs -sSf | sh # if Rust is not installed
+   cargo install cargo-generate
+   ```
 
-Use [cargo-generate](https://github.com/cargo-generate/cargo-generate) to
-scaffold a new bot from this template:
+2. **Generate a project** from this template:
 
-```bash
-cargo install cargo-generate # if not already installed
-cargo generate --git https://github.com/your-user/telegram-bot-template
-```
+   ```bash
+   cargo generate --git https://github.com/your-user/telegram-bot-template
+   ```
 
-You will be prompted for initial configuration values such as the bot token,
-default language and run mode. The answers populate the generated `.env` file.
+   The generator asks for the bot token, default language and run mode and
+   writes them to the newly created `.env` file.
+
+3. **Run the bot**:
+
+   ```bash
+   cargo run
+   ```
+
+   The runtime selects long polling or webhook based on configuration.
 
 ## Configuration
 
-Set the following environment variables before running the bot:
+All settings are read from environment variables. The most convenient way is to
+create a `.env` file in the project root.
 
-- `TELOXIDE_TOKEN` – bot token obtained from @BotFather.
-- `BOT_LANGUAGE` – `en` (default) or `ru`.
-- `RUN_MODE` – `polling` (default) or `webhook`.
-- `WEBHOOK_URL` – public HTTPS URL for webhook (required for `webhook` mode).
-- `WEBHOOK_ADDR` – address to bind in webhook mode (`0.0.0.0:8443` by default).
+| Variable        | Description                                                              | Default                |
+|-----------------|--------------------------------------------------------------------------|------------------------|
+| `TELOXIDE_TOKEN`| Bot token issued by [@BotFather](https://t.me/BotFather).                 | – (required)           |
+| `BOT_LANGUAGE`  | Interface language: `en` or `ru`.                                        | `en`                   |
+| `RUN_MODE`      | Interaction mode: `polling` or `webhook`.                                | `polling`              |
+| `WEBHOOK_URL`   | Public HTTPS URL for webhook endpoint (required in `webhook` mode).      | –                      |
+| `WEBHOOK_ADDR`  | Local address to bind the webhook listener.                              | `0.0.0.0:8443`         |
 
-## Running
+## Project layout
 
-```bash
-cargo run
+```
+src/
+├── config.rs    # Environment driven configuration loader
+├── error.rs     # Unified error type
+├── messages.rs  # Localised user‑facing messages
+├── run.rs       # Bot dispatcher for polling or webhook modes
+├── lib.rs       # Library exports
+└── main.rs      # Binary entry point
 ```
 
-The template selects long polling or webhook based on `RUN_MODE`.
+The template exposes a library crate so you can write integration tests or
+reuse components from other binaries.
 
-## Development
+## Development workflow
+
+The project uses stable Rust for builds but relies on the nightly formatter for
+consistent styling. Before committing, run:
 
 ```bash
 cargo +nightly fmt --
-cargo clippy -D warnings
+cargo clippy -- -D warnings
 cargo build --all-targets
 cargo test --all
 cargo doc --no-deps
 cargo audit
 ```
+
+## Running in webhook mode
+
+Webhook mode is suitable for production deployments where incoming updates are
+delivered over HTTPS. To enable it:
+
+1. Provide `RUN_MODE=webhook` and set `WEBHOOK_URL` to the public HTTPS URL
+   reachable by Telegram.
+2. Optionally adjust `WEBHOOK_ADDR` if the listener should bind to a specific
+   interface and port.
+
+The `run` module configures an Axum‑based webhook listener and dispatches
+updates to handlers.
+
+## Extending the bot
+
+The default handler replies with a greeting. Add your own logic inside
+`run.rs` by matching on incoming `Message` or using Teloxide's command system.
+Organise new features into modules to keep concerns separated.
+
+## License
+
+Licensed under either of
+
+* Apache License, Version 2.0, ([LICENSE](LICENSE) or
+  <http://www.apache.org/licenses/LICENSE-2.0>)
+* MIT license ([LICENSE](LICENSE) or <http://opensource.org/licenses/MIT>)
+
+at your option.
+
